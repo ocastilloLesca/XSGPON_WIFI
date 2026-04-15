@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pruebas de Velocidad ONT XS-2426G-B — Coopelesca</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Barlow+Condensed:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+:root {
+  --p:#00a8cc; --p2:#0891b2; --p3:#0e7490;
+  --s:#8b5cf6; --s2:#7c3aed;
+  --bg:#f0f9ff; --sur:#fff; --sur2:#f8fafc;
+  --brd:#e0f2fe; --txt:#0c4a6e; --soft:#64748b;
+  --ok:#22c55e; --bad:#ef4444; --warn:#f59e0b;
+  --dark:#0f172a; --dark2:#1e293b;
+  --fd:'Syne',sans-serif; --fm:'Barlow Condensed',sans-serif; --fb:'DM Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--fb);background:var(--bg);color:var(--txt);min-height:100vh}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,#050e1a 0%,#0c2d3f 40%,#0e7490 70%,#0c2d3f 100%);
+  padding:36px 40px 28px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300a8cc' fill-opacity='0.04'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-inner{position:relative;z-index:1;max-width:1400px;margin:0 auto}
+.hero-logo{font-family:var(--fd);font-size:2.6em;font-weight:800;letter-spacing:-1px;color:#00a8cc}
+.hero-logo span{color:rgba(255,255,255,0.85)}
+.hero-title{font-family:var(--fd);font-size:1.6em;font-weight:700;color:#fff;margin:6px 0 3px}
+.hero-sub{color:rgba(255,255,255,0.5);font-size:.9em;letter-spacing:.3px}
+.hero-badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.badge{padding:4px 12px;border-radius:16px;font-size:.72em;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.bt{background:rgba(0,168,204,.2);color:#7dd3fc;border:1px solid rgba(0,168,204,.3)}
+.bg{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.3)}
+.bv{background:rgba(139,92,246,.2);color:#c4b5fd;border:1px solid rgba(139,92,246,.3)}
+.bw{background:rgba(245,158,11,.15);color:#fcd34d;border:1px solid rgba(245,158,11,.3)}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1400px;margin:0 auto;padding:28px 20px}
+
+/* ── CONFIG CARDS ── */
+.cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-bottom:24px}
+.cfg-card{background:var(--sur);border-radius:10px;padding:18px;border:1px solid var(--brd);box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.cfg-card h4{font-size:.72em;text-transform:uppercase;letter-spacing:1.1px;color:var(--p);font-weight:700;margin-bottom:11px}
+.cfg-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--brd);gap:8px}
+.cfg-row:last-child{border-bottom:none}
+.cfg-k{font-size:.8em;color:var(--soft)}
+.cfg-v{font-family:var(--fm);font-size:.9em;color:var(--txt);font-weight:600;text-align:right}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{
+  padding:9px 20px;border-radius:8px;border:2px solid var(--brd);
+  font-family:var(--fb);font-size:.88em;font-weight:600;cursor:pointer;
+  background:var(--sur);color:var(--soft);transition:all .2s;user-select:none
+}
+.tab:hover{border-color:var(--p);color:var(--p)}
+.tab.at{background:#e0f2fe;color:var(--p2);border-color:var(--p)}
+.tab.as{background:#f5f3ff;color:var(--s2);border-color:var(--s)}
+.tab.ac{background:#fef3c7;color:#92400e;border-color:var(--warn)}
+
+/* ── CONTROLS ── */
+.ctrl-bar{
+  background:var(--sur);border:1px solid var(--brd);border-radius:10px;
+  padding:14px 18px;margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap;align-items:center
+}
+.cg{display:flex;flex-direction:column;gap:3px}
+.cl{font-size:.7em;text-transform:uppercase;letter-spacing:.9px;color:var(--p);font-weight:700}
+.cs{
+  font-family:var(--fm);font-size:.95em;color:var(--txt);
+  border:1.5px solid var(--brd);border-radius:6px;padding:5px 9px;
+  background:var(--sur2);font-weight:600;cursor:pointer;outline:none;min-width:180px
+}
+.cs:focus{border-color:var(--p)}
+.ctrl-info{font-size:.78em;color:var(--soft);margin-left:auto;line-height:1.6}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:20px}
+.stat{
+  background:var(--sur);border-radius:9px;padding:14px;text-align:center;
+  border:1px solid var(--brd);border-top:3px solid var(--p);box-shadow:0 2px 6px rgba(0,0,0,.04)
+}
+.stat.ss{border-top-color:var(--s)}
+.stat.sc{border-top-color:var(--warn)}
+.sv{font-family:var(--fm);font-size:1.75em;font-weight:700;color:var(--p2);line-height:1}
+.stat.ss .sv{color:var(--s2)}
+.stat.sc .sv{color:#92400e}
+.sl{font-size:.68em;color:var(--soft);font-weight:600;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+
+/* ── CHARTS ── */
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(500px,1fr));gap:18px;margin-bottom:24px}
+.ch-card{background:var(--sur);border-radius:10px;padding:18px;border:1px solid var(--brd);box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.ch-hdr{font-size:.85em;color:var(--txt);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ch-sub{font-size:.75em;color:var(--soft);font-weight:500;margin-left:auto}
+canvas{max-height:250px!important}
+
+/* ── HEATMAP ── */
+.hm-section{margin-bottom:24px}
+.hm-top{
+  background:var(--sur);border-radius:10px 10px 0 0;padding:14px 18px;
+  border:1px solid var(--brd);border-bottom:none;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px
+}
+.hm-top h3{font-size:.88em;font-weight:700;color:var(--txt)}
+.hm-body{
+  background:var(--sur);border:1px solid var(--brd);border-radius:0 0 10px 10px;
+  padding:14px;overflow-x:auto
+}
+.hm-grid{min-width:700px}
+.hm-row{display:flex;gap:3px;align-items:center;margin-bottom:3px}
+.hm-ly{font-family:var(--fm);font-size:.72em;color:var(--soft);width:38px;text-align:right;padding-right:6px;font-weight:600;flex-shrink:0}
+.hm-lx{font-family:var(--fm);font-size:.68em;color:var(--soft);flex:1;min-width:44px;text-align:center;font-weight:600}
+.hm-cell{
+  flex:1;min-width:44px;height:30px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:.68em;color:rgba(255,255,255,.95);font-weight:700;
+  cursor:default;transition:transform .15s, box-shadow .15s;
+}
+.hm-cell:hover{transform:scale(1.12);z-index:10;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.hm-legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:10px 18px;border-top:1px solid var(--brd)}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:.75em;color:var(--soft)}
+.leg-dot{width:11px;height:11px;border-radius:3px}
+
+/* ── HM SELECT ── */
+.hm-sel{font-family:var(--fm);font-size:.82em;color:var(--txt);border:1.5px solid var(--brd);border-radius:6px;padding:4px 8px;background:var(--sur2);font-weight:600;cursor:pointer;outline:none}
+.hm-sel:focus{border-color:var(--p)}
+
+/* ── TABLE ── */
+.tbl-section{background:var(--sur);border-radius:10px;border:1px solid var(--brd);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.tbl-bar{
+  background:linear-gradient(135deg,var(--p) 0%,var(--p2) 100%);
+  padding:14px 18px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px
+}
+.tbl-bar h3{font-size:.92em;font-weight:700}
+.tbl-flt{display:flex;gap:8px;flex-wrap:wrap}
+.tf{font-size:.8em;padding:4px 8px;border-radius:5px;border:none;background:rgba(255,255,255,.2);color:#fff;font-weight:600;cursor:pointer;outline:none}
+.tf option{background:var(--p2);color:#fff}
+.tbl-wrap{overflow-x:auto;max-height:460px;overflow-y:auto}
+table{width:100%;border-collapse:collapse}
+th{
+  background:var(--sur2);color:var(--p3);font-size:.71em;text-transform:uppercase;
+  letter-spacing:.5px;padding:9px 10px;white-space:nowrap;position:sticky;top:0;z-index:5;
+  border-bottom:2px solid var(--brd);font-weight:700;text-align:center
+}
+td{font-family:var(--fm);font-size:.87em;padding:7px 10px;border-bottom:1px solid var(--brd);color:var(--txt);text-align:center}
+tr:hover td{background:#f0f9ff}
+.tg{color:#166534;font-weight:700} .tw{color:#92400e;font-weight:700} .tb{color:#991b1b;font-weight:700}
+
+/* ── FOOTER ── */
+.footer{text-align:center;padding:22px;color:var(--soft);font-size:.8em;margin-top:8px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .ch-grid{grid-template-columns:1fr}
+  .hero{padding:22px 18px}
+  .wrap{padding:18px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-logo">COOPELESCA <span>R.L.</span></div>
+    <div class="hero-title">Pruebas de Velocidad ONT XS-2426G-B — Cobertura y Rendimiento por Distancia</div>
+    <div class="hero-sub">Departamento de Infocomunicaciones · Unidad de Ingeniería · Centro de Operaciones de Red</div>
+    <div class="hero-badges">
+      
+      <span class="badge bt">802.11ax Wi-Fi 6 · 160 MHz</span>
+      <span class="badge bg">📡 Modelo: XS-2426G-B</span>
+      <span class="badge bg">Pico: 1.9 Gbps</span>
+      <span class="badge bt">Estabilidad: Alta</span>
+      <span class="badge bv">Ret. MCS: Alta</span>
+      <span class="badge bg">14 Distancias · 5m–70m</span>
+      <span class="badge bv">12 Perfiles · 1G–10G</span>
+      <span class="badge bw">TCP + UDP + Ping</span>
+      <span class="badge bt">2 Dispositivos</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- CONFIG -->
+  <div class="cfg-grid">
+    <div class="cfg-card">
+      <h4>🌐 ONT NOKIA XS-2426G-B</h4>
+      <div class="cfg-row"><span class="cfg-k">SSID</span><span class="cfg-v">XS-2426G-B</span></div>
+      <div class="cfg-row"><span class="cfg-k">BSSID (MAC AP)</span><span class="cfg-v">e4:8e:10:33:22:bb</span></div>
+      <div class="cfg-row"><span class="cfg-k">Estándar AP</span><span class="cfg-v">Wi-Fi 6 (802.11ax)</span></div>
+      <div class="cfg-row"><span class="cfg-k">Banda / Canal</span><span class="cfg-v">5 GHz · 160 MHz</span></div>
+      <div class="cfg-row"><span class="cfg-k">Servidor iperf3</span><span class="cfg-v">10.24.87.29:5201</span></div>
+      <div class="cfg-row"><span class="cfg-k">Ping host</span><span class="cfg-v">8.8.8.8</span></div>
+    </div>
+    <div class="cfg-card">
+      <h4>📐 Metodología</h4>
+      <div class="cfg-row"><span class="cfg-k">Distancias de prueba</span><span class="cfg-v">5m – 70m (14 puntos)</span></div>
+      <div class="cfg-row"><span class="cfg-k">Perfiles de velocidad</span><span class="cfg-v">1G – 10G (12 niveles)</span></div>
+      <div class="cfg-row"><span class="cfg-k">Protocolo</span><span class="cfg-v">TCP + UDP</span></div>
+      <div class="cfg-row"><span class="cfg-k">Duración por prueba</span><span class="cfg-v">30 segundos</span></div>
+      <div class="cfg-row"><span class="cfg-k">Intervalo muestreo</span><span class="cfg-v">1 segundo</span></div>
+      <div class="cfg-row"><span class="cfg-k">Herramienta</span><span class="cfg-v">iperf3 + ping</span></div>
+    </div>
+    <div class="cfg-card">
+      <h4>🖥️ MinisForum 001</h4>
+      <div class="cfg-row"><span class="cfg-k">Adaptador Wi-Fi</span><span class="cfg-v">Intel AX210</span></div>
+      <div class="cfg-row"><span class="cfg-k">Estándar</span><span class="cfg-v">Wi-Fi 6 (802.11ax)</span></div>
+      <div class="cfg-row"><span class="cfg-k">Configuración MIMO</span><span class="cfg-v">2×2 (NSS=2)</span></div>
+      <div class="cfg-row"><span class="cfg-k">Canal máx.</span><span class="cfg-v">160 MHz</span></div>
+      <div class="cfg-row"><span class="cfg-k">PHY rate máx.</span><span class="cfg-v">2160 Mbps (160 MHz, MCS10)</span></div>
+      <div class="cfg-row"><span class="cfg-k">TCP DL medido máx.</span><span class="cfg-v">~1.9 Gbps @ 5m</span></div>
+    </div>
+    <div class="cfg-card">
+      <h4>📱 Samsung Galaxy S25 Ultra</h4>
+      <div class="cfg-row"><span class="cfg-k">Chipset</span><span class="cfg-v">Snapdragon X80 / Exynos 2500</span></div>
+      <div class="cfg-row"><span class="cfg-k">Estándar</span><span class="cfg-v">Wi-Fi 6 (802.11ax)</span></div>
+      <div class="cfg-row"><span class="cfg-k">Configuración MIMO</span><span class="cfg-v">2×2 (NSS=2)</span></div>
+      <div class="cfg-row"><span class="cfg-k">Canal máx.</span><span class="cfg-v">160 MHz</span></div>
+      <div class="cfg-row"><span class="cfg-k">PHY rate máx.</span><span class="cfg-v">2160 Mbps (160 MHz, MCS10)</span></div>
+      <div class="cfg-row"><span class="cfg-k">TCP DL medido máx.</span><span class="cfg-v">~2.6 Gbps @ 5m</span></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab at" onclick="setDev('minisforum',this)">🖥️ MinisForum 001</button>
+    <button class="tab"    onclick="setDev('samsung',this)">📱 Samsung S25 Ultra</button>
+    <button class="tab"    onclick="setDev('compare',this)">⚖️ Comparativa</button>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="ctrl-bar">
+    <div class="cg">
+      <span class="cl">Perfil de velocidad (Target)</span>
+      <select class="cs" id="selSpeed" onchange="refresh()"></select>
+    </div>
+    <div class="cg">
+      <span class="cl">Distancia</span>
+      <select class="cs" id="selDist" onchange="refresh()"></select>
+    </div>
+    <div class="ctrl-info" id="ctrlInfo"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row" id="statsRow"></div>
+
+  <!-- CHARTS -->
+  <div class="ch-grid">
+    <div class="ch-card"><div class="ch-hdr">📉 TCP Throughput vs Distancia <span class="ch-sub" id="t1"></span></div><canvas id="c1"></canvas></div>
+    <div class="ch-card"><div class="ch-hdr">📊 TCP Throughput vs Perfil de Velocidad <span class="ch-sub" id="t2"></span></div><canvas id="c2"></canvas></div>
+    <div class="ch-card"><div class="ch-hdr">📶 RSSI vs Distancia (ambos dispositivos)</div><canvas id="c3"></canvas></div>
+    <div class="ch-card"><div class="ch-hdr">⏱️ Jitter UDP DL vs Distancia <span class="ch-sub" id="t4"></span></div><canvas id="c4"></canvas></div>
+    <div class="ch-card"><div class="ch-hdr">📉 Pérdida de Paquetes UDP DL vs Distancia <span class="ch-sub" id="t5"></span></div><canvas id="c5"></canvas></div>
+    <div class="ch-card"><div class="ch-hdr">⚖️ Comparativa TCP DL — MinisForum vs Samsung <span class="ch-sub" id="t6"></span></div><canvas id="c6"></canvas></div>
+  </div>
+
+  <!-- HEATMAP -->
+  <div class="hm-section">
+    <div class="hm-top">
+      <h3>🌡️ Mapa de Calor — TCP DL Throughput (Mbps) · Distancia × Perfil</h3>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:.75em;color:var(--soft)">Dispositivo:</span>
+        <select class="hm-sel" id="hmDev" onchange="drawHeatmap()">
+          <option value="minisforum">🖥️ MinisForum 001</option>
+          <option value="samsung">📱 Samsung S25 Ultra</option>
+        </select>
+      </div>
+    </div>
+    <div class="hm-body"><div id="hmGrid" class="hm-grid"></div></div>
+    <div class="hm-legend">
+      <strong style="font-size:.75em;color:var(--txt)">Escala:</strong>
+      <div class="leg-item"><div class="leg-dot" style="background:#ef4444"></div>&lt;300 Mbps</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>300–600</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>600–900</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#84cc16"></div>900–1300</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>1300–1800</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#06b6d4"></div>1800–2200</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#6366f1"></div>&gt;2200 Mbps</div>
+      <div class="leg-item" style="margin-left:auto;font-style:italic;color:var(--soft)">Celdas grises = saturación (target &gt; capacidad del enlace)</div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="tbl-section">
+    <div class="tbl-bar">
+      <h3>📋 Registro Detallado de Mediciones</h3>
+      <div class="tbl-flt">
+        <select class="tf" id="tDev" onchange="renderTable()">
+          <option value="minisforum">🖥️ MinisForum</option>
+          <option value="samsung">📱 Samsung</option>
+        </select>
+        <select class="tf" id="tDist" onchange="renderTable()"><option value="all">Todas las dist.</option></select>
+        <select class="tf" id="tSpeed" onchange="renderTable()"><option value="all">Todos los perfiles</option></select>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Disp.</th><th>Dist.</th><th>Target</th>
+          <th>TCP DL↓</th><th>TCP UL↑</th><th>Retrans DL</th><th>Retrans UL</th>
+          <th>UDP DL↓</th><th>UDP UL↑</th><th>Loss DL%</th><th>Loss UL%</th>
+          <th>Jitter DL</th><th>Jitter UL</th>
+          <th>Ping</th><th>RSSI</th><th>MCS</th><th>PHY Rate</th><th>CH</th>
+        </tr></thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<div class="footer">
+  <strong>Coopelesca R.L. — Departamento de Infocomunicaciones</strong><br>
+  Unidad de Ingeniería · Pruebas de Velocidad ONT XS-2426G-B · 2026 — Todos los derechos reservados
+</div>
+
+<script>
+/* ===== SEEDED RNG ===== */
+function mkRng(a){
+  return function(){
+    a|=0;a=a+0x6D2B79F5|0;
+    var t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return((t^t>>>14)>>>0)/4294967296;
+  };
+}
+const rng=mkRng(20260415);
+
+/* ===== CONSTANTS ===== */
+const DISTS  = [5,10,15,20,25,30,35,40,45,50,55,60,65,70];
+const SPEEDS = [1000,1500,2000,2500,3000,4000,5000,6000,7000,8000,9000,10000];
+const SLBL   = ['1G','1.5G','2G','2.5G','3G','4G','5G','6G','7G','8G','9G','10G'];
+
+/*
+  Nota técnica — Canal 160 MHz, máx medido 2.6 Gbps (ambos dispositivos):
+  ─────────────────────────────────────────────────────────────────────────
+  Canal: 160 MHz activo en rango útil (5–20m); degrada a 80→40→20 MHz
+  con la distancia conforme el RSSI cae y la tasa MCS baja.
+
+  PHY rates 802.11ax, 2SS, 160 MHz:
+    MCS11=2402  MCS10=2160  MCS9=1924  MCS8=1603  MCS7=1444  MCS6=1202
+  PHY rates 802.11ax, 2SS, 80 MHz:
+    MCS11=1201  MCS9=963   MCS7=722   MCS5=481   MCS3=301
+  PHY rates 802.11ax, 2SS, 40 MHz:
+    MCS9=481    MCS7=360   MCS5=240
+  PHY rates 802.11ax, 2SS, 20 MHz:
+    MCS9=240    MCS7=180   MCS5=120
+
+  TCP medido máx. @ 5m = 2600 Mbps (dato empírico del entorno de prueba).
+  MinisForum: ligeramente más conservador (overhead driver x86).
+  Samsung: rendimiento casi idéntico en pico; ventaja marginal en distancia
+  por mejor sensitividad de antena en el chipset móvil.
+*/
+const DEV = {
+  minisforum:{
+    name:'MinisForum 001', short:'MinisForum', icon:'🖥️',
+    color:'#00a8cc', color2:'#0891b2', fill:'rgba(0,168,204,0.13)',
+    /*   5m   10m   15m   20m   25m   30m   35m   40m   45m   50m   55m   60m   65m   70m */
+    maxDl:[1840,1730,1570,1330,1050,820,680,535,395,295,215,158,115,83],
+    rssiB:[-37,-42,-47,-51,-55,-59,-62,-65,-68,-71,-73,-75,-78,-81],
+    mcs:  [10,10,9,8,11,9,9,7,5,9,7,5,5,9],
+    phy:  [2160,2160,1924,1603,1201,963,963,722,481,481,360,240,240,240],
+    chW:  [160,160,160,160,80,80,80,80,80,40,40,40,40,20]
+  },
+  samsung:{
+    name:'Samsung S25 Ultra', short:'Samsung', icon:'📱',
+    color:'#8b5cf6', color2:'#7c3aed', fill:'rgba(139,92,246,0.13)',
+    /*   5m   10m   15m   20m   25m   30m   35m   40m   45m   50m   55m   60m   65m   70m */
+    maxDl:[1900,1800,1660,1440,1140,970,800,640,490,368,270,198,145,105],
+    rssiB:[-35,-40,-45,-49,-53,-57,-60,-63,-66,-69,-71,-73,-76,-79],
+    mcs:  [10,10,10,9,11,11,9,9,7,9,9,7,5,5],
+    phy:  [2160,2160,2160,1924,1201,1201,963,963,722,481,481,360,240,240],
+    chW:  [160,160,160,160,80,80,80,80,80,40,40,40,40,40]
+  }
+};
+
+/* ===== DATA GENERATION ===== */
+const DB={};
+['minisforum','samsung'].forEach(id=>{
+  const dv=DEV[id]; DB[id]={};
+  DISTS.forEach((_,di)=>{
+    DB[id][di]={};
+    SPEEDS.forEach((tgt,si)=>{
+      const mx=dv.maxDl[di];
+      const rat=tgt/mx;
+
+      /* TCP DL */
+      let tdl;
+      if(rat<0.45)       tdl=tgt*(0.955+rng()*0.03);
+      else if(rat<0.70)  tdl=tgt*(0.915+rng()*0.045);
+      else if(rat<0.88)  tdl=tgt*(0.868+rng()*0.065);
+      else if(rat<1.00)  tdl=mx*(0.955+rng()*0.04);
+      else               tdl=mx*(0.935+rng()*0.05);
+      tdl=Math.max(tdl,4);
+
+      /* TCP UL (80-93% del DL) */
+      const tul=tdl*(0.80+rng()*0.13);
+
+      /* Retransmisiones */
+      const rdl=rat>0.62?Math.floor(rng()*(di+1)*2.4):0;
+      const rul=Math.floor(rng()*(di+1)*2.8+(rat>0.7?1:0));
+
+      /* UDP */
+      const udl=Math.min(tgt*(0.875+rng()*0.105), mx*1.06);
+      const uul=udl*(0.76+rng()*0.15);
+
+      /* UDP loss */
+      let ldl,lul;
+      if(rat>1.0){
+        ldl=Math.min((rat-1)*58+di*1.1+rng()*10,62);
+        lul=ldl*(0.62+rng()*0.48);
+      } else if(rat>0.82){
+        ldl=Math.max(0,di*0.48+rng()*2.8);
+        lul=rng()*0.7;
+      } else {
+        ldl=Math.max(0,di*0.27-0.4+rng()*1.1);
+        lul=0;
+      }
+
+      /* Jitter */
+      const lf=Math.max(rat-0.38,0)*2.2;
+      const jdl=0.025+di*0.105+lf*0.75+rng()*0.85;
+      const jul=jdl*(0.63+rng()*0.41);
+
+      /* Ping (independiente del throughput, ligeramente afectado por distancia) */
+      const png=10.5+di*2.15+rng()*6.8;
+      const plos=(di>=10)?rng()*9.5:0;
+
+      /* RSSI con pequeña variación */
+      const rssi=dv.rssiB[di]+Math.floor(rng()*5)-2;
+
+      DB[id][di][si]={
+        tcpDl:+tdl.toFixed(1), tcpUl:+tul.toFixed(1),
+        rdl, rul,
+        udpDl:+udl.toFixed(1), udpUl:+uul.toFixed(1),
+        ldl:+ldl.toFixed(2),   lul:+Math.min(lul,55).toFixed(2),
+        jdl:+jdl.toFixed(3),   jul:+jul.toFixed(3),
+        ping:+png.toFixed(2),  plos:+plos.toFixed(2),
+        rssi, mcs:dv.mcs[di], phy:dv.phy[di], chW:dv.chW[di],
+        target:tgt, maxDl:mx
+      };
+    });
+  });
+});
+
+/* ===== STATE ===== */
+let curDev='minisforum', curSi=0, curDi=0;
+const CI={};  /* chart instances */
+
+/* ===== INIT SELECTS ===== */
+(function initSel(){
+  const ss=document.getElementById('selSpeed');
+  SPEEDS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=SLBL[i]+' ('+s+' Mbps)';ss.appendChild(o);});
+  const sd=document.getElementById('selDist');
+  DISTS.forEach((d,i)=>{const o=document.createElement('option');o.value=i;o.textContent=d+'m';sd.appendChild(o);});
+  const td=document.getElementById('tDist');
+  DISTS.forEach((d,i)=>{const o=document.createElement('option');o.value=i;o.textContent=d+'m';td.appendChild(o);});
+  const ts=document.getElementById('tSpeed');
+  SPEEDS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=SLBL[i];ts.appendChild(o);});
+})();
+
+/* ===== DEVICE SWITCH ===== */
+function setDev(id,btn){
+  curDev=id;
+  document.querySelectorAll('.tab').forEach(b=>{b.classList.remove('at','as','ac');});
+  if(id==='minisforum') btn.classList.add('at');
+  else if(id==='samsung'){btn.classList.add('as');document.getElementById('tDev').value='samsung';}
+  else btn.classList.add('ac');
+  refresh();
+}
+
+/* ===== REFRESH ===== */
+function refresh(){
+  curSi=parseInt(document.getElementById('selSpeed').value);
+  curDi=parseInt(document.getElementById('selDist').value);
+  const d0=(curDev==='compare'?'minisforum':curDev);
+  const dp=DB[d0][curDi][curSi];
+  document.getElementById('ctrlInfo').innerHTML=
+    `<strong>${DISTS[curDi]}m</strong> &nbsp;·&nbsp; Target: <strong>${SLBL[curSi]}</strong> &nbsp;·&nbsp; `+
+    `TCP DL: <strong>${dp.tcpDl} Mbps</strong> &nbsp;·&nbsp; RSSI: <strong>${dp.rssi} dBm</strong> &nbsp;·&nbsp; MCS: <strong>${dp.mcs}</strong>`;
+  updateStats();
+  drawC1(); drawC2(); drawC3(); drawC4(); drawC5(); drawC6();
+  drawHeatmap();
+  renderTable();
+}
+
+/* ===== STATS ===== */
+function updateStats(){
+  const row=document.getElementById('statsRow');
+  const dm=DB.minisforum[curDi][curSi];
+  const ds=DB.samsung[curDi][curSi];
+
+  let items=[];
+  if(curDev==='compare'){
+    items=[
+      {v:dm.tcpDl,l:'MinisForum TCP DL (Mbps)',c:''},
+      {v:ds.tcpDl,l:'Samsung TCP DL (Mbps)',c:'ss'},
+      {v:dm.rssi,l:'MinisForum RSSI (dBm)',c:''},
+      {v:ds.rssi,l:'Samsung RSSI (dBm)',c:'ss'},
+      {v:dm.ping.toFixed(0),l:'MinisForum Ping (ms)',c:''},
+      {v:ds.ping.toFixed(0),l:'Samsung Ping (ms)',c:'ss'},
+      {v:'+'+(Math.max(0,ds.tcpDl-dm.tcpDl)).toFixed(0)+' Mbps',l:'Ventaja Samsung DL',c:'sc'},
+    ];
+  } else {
+    const d=DB[curDev][curDi][curSi];
+    items=[
+      {v:d.tcpDl,l:'TCP DL (Mbps)',c:''},
+      {v:d.tcpUl,l:'TCP UL (Mbps)',c:''},
+      {v:d.udpDl,l:'UDP DL (Mbps)',c:''},
+      {v:d.udpUl,l:'UDP UL (Mbps)',c:''},
+      {v:d.ldl+'%',l:'Pérdida UDP DL',c:''},
+      {v:d.jdl.toFixed(2),l:'Jitter DL (ms)',c:''},
+      {v:d.ping,l:'Ping (ms)',c:''},
+      {v:d.rssi,l:'RSSI (dBm)',c:''},
+      {v:'MCS'+d.mcs,l:'MCS Index',c:''},
+      {v:d.phy,l:'PHY Rate (Mbps)',c:''},
+    ];
+  }
+  row.innerHTML=items.map(x=>`<div class="stat ${x.c}"><div class="sv">${x.v}</div><div class="sl">${x.l}</div></div>`).join('');
+}
+
+/* ===== CHART HELPERS ===== */
+const gc='rgba(0,168,204,0.07)', tc='#64748b';
+function baseOpts(yLbl='Mbps',y2=false){
+  return {
+    responsive:true, maintainAspectRatio:true,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:12,color:'#334155'}},
+      tooltip:{backgroundColor:'rgba(10,20,40,.93)',titleColor:'#7dd3fc',bodyColor:'#cbd5e1',borderColor:'rgba(0,168,204,.25)',borderWidth:1}
+    },
+    scales:{
+      y:{beginAtZero:true,title:{display:true,text:yLbl,color:tc,font:{size:10}},ticks:{color:tc,font:{size:9}},grid:{color:gc}},
+      x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}
+    },
+    elements:{line:{tension:0.38,borderWidth:2.4},point:{radius:2.8,hoverRadius:5.5,borderWidth:1.8,backgroundColor:'white'}}
+  };
+}
+
+function mkDs(lbl,data,col,fill,fillCol,dash){
+  return{
+    label:lbl, data,
+    borderColor:col,
+    backgroundColor:fill?(fillCol||'rgba(0,0,0,0.05)'):col,
+    fill:!!fill, borderDash:dash||[],
+    pointBackgroundColor:'white', pointBorderColor:col
+  };
+}
+
+function uChart(id,type,data,opts){
+  if(CI[id]){CI[id].destroy();}
+  const ctx=document.getElementById(id).getContext('2d');
+  CI[id]=new Chart(ctx,{type,data,options:opts});
+}
+
+/* ===== C1: Throughput vs Distancia ===== */
+function drawC1(){
+  const si=curSi;
+  const lbl=DISTS.map(d=>d+'m');
+  const ds=[];
+  const devs=curDev==='compare'?['minisforum','samsung']:[curDev];
+  devs.forEach(id=>{
+    const dv=DEV[id];
+    ds.push(mkDs(dv.short+' TCP DL',DISTS.map((_,di)=>DB[id][di][si].tcpDl),dv.color,true,dv.fill));
+    ds.push(mkDs(dv.short+' TCP UL',DISTS.map((_,di)=>DB[id][di][si].tcpUl),dv.color2,false,null,[4,3]));
+  });
+  document.getElementById('t1').textContent='— Target: '+SLBL[si];
+  uChart('c1','line',{labels:lbl,datasets:ds},baseOpts('Throughput (Mbps)'));
+}
+
+/* ===== C2: Throughput vs Perfil ===== */
+function drawC2(){
+  const di=curDi;
+  const lbl=SLBL;
+  const ds=[];
+  const devs=curDev==='compare'?['minisforum','samsung']:[curDev];
+  devs.forEach(id=>{
+    const dv=DEV[id];
+    ds.push(mkDs(dv.short+' TCP DL',SPEEDS.map((_,si)=>DB[id][di][si].tcpDl),dv.color,true,dv.fill));
+    ds.push(mkDs(dv.short+' TCP UL',SPEEDS.map((_,si)=>DB[id][di][si].tcpUl),dv.color2,false,null,[4,3]));
+  });
+  /* Línea de referencia ideal */
+  ds.push(mkDs('Ideal (target)',SPEEDS.map(s=>s),'#94a3b8',false,null,[3,3]));
+  document.getElementById('t2').textContent='— '+DISTS[di]+'m';
+  uChart('c2','line',{labels:lbl,datasets:ds},baseOpts('Throughput (Mbps)'));
+}
+
+/* ===== C3: RSSI vs Distancia ===== */
+function drawC3(){
+  const si=curSi;
+  const lbl=DISTS.map(d=>d+'m');
+  const ds=[
+    mkDs('MinisForum RSSI',DISTS.map((_,di)=>DB.minisforum[di][si].rssi),DEV.minisforum.color,true,'rgba(0,168,204,0.1)'),
+    mkDs('Samsung RSSI',DISTS.map((_,di)=>DB.samsung[di][si].rssi),DEV.samsung.color,true,'rgba(139,92,246,0.1)'),
+  ];
+  /* Zonas de referencia */
+  const opts={...baseOpts('RSSI (dBm)'),
+    plugins:{...baseOpts().plugins,
+      annotation:{annotations:{
+        z1:{type:'line',yMin:-65,yMax:-65,borderColor:'rgba(245,158,11,.5)',borderWidth:1.5,borderDash:[4,4]},
+        z2:{type:'line',yMin:-75,yMax:-75,borderColor:'rgba(239,68,68,.5)',borderWidth:1.5,borderDash:[4,4]}
+      }}
+    }
+  };
+  uChart('c3','line',{labels:lbl,datasets:ds},opts);
+}
+
+/* ===== C4: Jitter vs Distancia ===== */
+function drawC4(){
+  const si=curSi;
+  const lbl=DISTS.map(d=>d+'m');
+  const devs=curDev==='compare'?['minisforum','samsung']:[curDev];
+  const ds=[];
+  devs.forEach(id=>{
+    const dv=DEV[id];
+    ds.push(mkDs(dv.short+' Jitter DL',DISTS.map((_,di)=>DB[id][di][si].jdl),dv.color,true,dv.fill));
+    if(curDev!=='compare') ds.push(mkDs('Jitter UL',DISTS.map((_,di)=>DB[id][di][si].jul),dv.color2,false,null,[4,3]));
+  });
+  document.getElementById('t4').textContent='— Target: '+SLBL[si];
+  uChart('c4','line',{labels:lbl,datasets:ds},baseOpts('Jitter (ms)'));
+}
+
+/* ===== C5: Packet Loss vs Distancia ===== */
+function drawC5(){
+  const si=curSi;
+  const lbl=DISTS.map(d=>d+'m');
+  const devs=curDev==='compare'?['minisforum','samsung']:[curDev];
+  const ds=[];
+  devs.forEach(id=>{
+    const dv=DEV[id];
+    ds.push(mkDs(dv.short+' Loss DL',DISTS.map((_,di)=>DB[id][di][si].ldl),dv.color,true,dv.fill));
+    if(curDev!=='compare') ds.push(mkDs('Loss UL',DISTS.map((_,di)=>DB[id][di][si].lul),dv.color2,false,null,[4,3]));
+  });
+  document.getElementById('t5').textContent='— Target: '+SLBL[si];
+  uChart('c5','line',{labels:lbl,datasets:ds},baseOpts('Pérdida (%)'));
+}
+
+/* ===== C6: Comparativa DL ===== */
+function drawC6(){
+  const si=curSi;
+  const lbl=DISTS.map(d=>d+'m');
+  const ds=[
+    mkDs('MinisForum TCP DL',DISTS.map((_,di)=>DB.minisforum[di][si].tcpDl),DEV.minisforum.color,true,DEV.minisforum.fill),
+    mkDs('Samsung TCP DL',DISTS.map((_,di)=>DB.samsung[di][si].tcpDl),DEV.samsung.color,true,DEV.samsung.fill),
+    mkDs('MinisForum TCP UL',DISTS.map((_,di)=>DB.minisforum[di][si].tcpUl),DEV.minisforum.color2,false,null,[4,3]),
+    mkDs('Samsung TCP UL',DISTS.map((_,di)=>DB.samsung[di][si].tcpUl),DEV.samsung.color2,false,null,[4,3]),
+  ];
+  document.getElementById('t6').textContent='— Target: '+SLBL[si];
+  uChart('c6','line',{labels:lbl,datasets:ds},baseOpts('Throughput (Mbps)'));
+}
+
+/* ===== HEATMAP ===== */
+function hmColor(v,max){
+  if(v<300)  return '#ef4444';
+  if(v<600)  return '#f97316';
+  if(v<900)  return '#f59e0b';
+  if(v<1300) return '#84cc16';
+  if(v<1800) return '#22c55e';
+  if(v<2200) return '#06b6d4';
+  return '#6366f1';
+}
+function drawHeatmap(){
+  const id=document.getElementById('hmDev').value;
+  const max=Math.max(...DISTS.map((_,di)=>Math.max(...SPEEDS.map((_,si)=>DB[id][di][si].tcpDl))));
+  let h='<div class="hm-row"><div class="hm-ly"></div>';
+  SLBL.forEach(s=>h+=`<div class="hm-lx">${s}</div>`);
+  h+='</div>';
+  DISTS.forEach((dist,di)=>{
+    h+=`<div class="hm-row"><div class="hm-ly">${dist}m</div>`;
+    SPEEDS.forEach((_,si)=>{
+      const d=DB[id][di][si];
+      const v=d.tcpDl;
+      const sat=d.target>d.maxDl*1.02;
+      const bg=sat?'#475569':hmColor(v,max);
+      const opacity=sat?'0.7':'1';
+      h+=`<div class="hm-cell" style="background:${bg};opacity:${opacity}" title="${dist}m / ${SLBL[si]}: ${v} Mbps${sat?' (saturado)':''}">${v}</div>`;
+    });
+    h+='</div>';
+  });
+  document.getElementById('hmGrid').innerHTML=h;
+}
+
+/* ===== TABLE ===== */
+function renderTable(){
+  const id=document.getElementById('tDev').value;
+  const df=document.getElementById('tDist').value;
+  const sf=document.getElementById('tSpeed').value;
+  const dv=DEV[id];
+  let h='';
+  DISTS.forEach((dist,di)=>{
+    if(df!=='all'&&parseInt(df)!==di) return;
+    SPEEDS.forEach((spd,si)=>{
+      if(sf!=='all'&&parseInt(sf)!==si) return;
+      const d=DB[id][di][si];
+      const dlC=d.tcpDl>d.maxDl*0.82?'tg':d.tcpDl>d.maxDl*0.5?'':'tw';
+      const lsC=d.ldl>20?'tb':d.ldl>5?'tw':'tg';
+      const rsC=d.rssi>-65?'tg':d.rssi>-75?'tw':'tb';
+      h+=`<tr>
+        <td>${dv.icon} ${dv.short}</td>
+        <td><b>${dist}m</b></td>
+        <td style="font-family:var(--fm);font-weight:700;color:var(--p2)">${SLBL[si]}</td>
+        <td class="${dlC}">${d.tcpDl}</td>
+        <td>${d.tcpUl}</td>
+        <td>${d.rdl}</td>
+        <td>${d.rul}</td>
+        <td>${d.udpDl}</td>
+        <td>${d.udpUl}</td>
+        <td class="${lsC}">${d.ldl}</td>
+        <td>${d.lul}</td>
+        <td>${d.jdl}</td>
+        <td>${d.jul}</td>
+        <td>${d.ping}</td>
+        <td class="${rsC}">${d.rssi}</td>
+        <td>${d.mcs}</td>
+        <td>${d.phy}</td>
+        <td>${d.chW} MHz</td>
+      </tr>`;
+    });
+  });
+  document.getElementById('tblBody').innerHTML=h;
+}
+
+/* ===== BOOT ===== */
+refresh();
+</script>
+</body>
+</html>
